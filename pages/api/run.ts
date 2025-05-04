@@ -1,11 +1,16 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-import runTerraformSnapshot from '../../tools/terraform_snapshot';
+import type { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { tool } = req.query;
-  if (tool === "terraform_snapshot") {
-    const result = await runTerraformSnapshot();
-    return res.status(200).json(result);
+
+  try {
+    const response = await fetch(`https://model-context-protocol-mcp-with-vercel-functions-gules-ten.vercel.app/api/run?tool=${tool}`);
+    const data = await response.json();
+    return res.status(200).json(data);
+  } catch (error: any) {
+    return res.status(500).json({
+      error: "Failed to connect to external MCP",
+      details: error.message
+    });
   }
-  return res.status(404).json({ error: "Tool not found" });
 }
