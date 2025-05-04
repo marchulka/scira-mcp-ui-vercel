@@ -4,7 +4,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const { tool } = req.query;
 
   try {
-    const response = await fetch(`https://model-context-protocol-mcp-with-vercel-functions-gules-ten.vercel.app/api/run?tool=${tool}`);
+    const response = await fetch(`https://scira-mcp-chat-production-2904.up.railway.app/api/run?tool=${tool}`);
     const data = await response.json();
     return res.status(200).json(data);
   } catch (error: any) {
