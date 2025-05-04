@@ -17,7 +17,6 @@ export default async function run() {
     node: process.version,
   };
 
-  // 1. Копируем .env файлы, если они есть
   const envFiles = [".env", ".env.local", ".env.production"];
   const copied = [];
 
@@ -30,13 +29,12 @@ export default async function run() {
     }
   }
 
-  // 2. Сохраняем Git-статус
   try {
     const gitStatus = execSync("git status", { encoding: "utf-8" });
     const gitLog = execSync("git log -1", { encoding: "utf-8" });
     fs.writeFileSync(
       path.join(snapshotDir, `git-info-${timestamp}.txt`),
-      `=== GIT STATUS ===\n${gitStatus}\n\n=== GIT LOG ===\n${gitLog}`
+      `=== GIT STATUS ===\\n${gitStatus}\\n\\n=== GIT LOG ===\\n${gitLog}`
     );
   } catch (err) {
     fs.writeFileSync(
@@ -45,7 +43,6 @@ export default async function run() {
     );
   }
 
-  // 3. Создаём итоговый JSON-отчёт
   fs.writeFileSync(
     path.join(snapshotDir, `snapshot-meta-${timestamp}.json`),
     JSON.stringify({ ...snapshotMeta, copied }, null, 2)
