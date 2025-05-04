@@ -4,7 +4,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const { tool } = req.query;
 
   try {
-    const response = await fetch(`https://scira-mcp-chat-production-2904.up.railway.app/api/run?tool=${tool}`);
+    const response = await fetch(`https://scira-mcp-chat-production-2904.up.railway.app/api/run`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ tool })
+    });
+
     const data = await response.json();
     return res.status(200).json(data);
   } catch (error: any) {
