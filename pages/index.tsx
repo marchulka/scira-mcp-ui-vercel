@@ -1,20 +1,27 @@
-import React, { useState } from 'react';
+import { useState } from "react";
 
 export default function Home() {
-  const [output, setOutput] = useState("Нажми кнопку для запуска terraform_snapshot");
+  const [result, setResult] = useState("");
 
-  const handleClick = async () => {
-    const res = await fetch("/api/run?tool=terraform_snapshot");
+  const runSnapshot = async () => {
+    const res = await fetch("/api/run", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ tool: "terraform_snapshot" })
+    });
+
     const data = await res.json();
-    setOutput(data.message || JSON.stringify(data));
+    setResult(JSON.stringify(data, null, 2));
   };
 
   return (
-    <div style={{ padding: 40, fontFamily: "sans-serif" }}>
+    <div style={{ fontFamily: "sans-serif", padding: "2rem" }}>
       <h1>🚀 Scira MCP UI (Vercel Edition)</h1>
       <p>Управляй инфраструктурой с одной кнопки</p>
-      <button onClick={handleClick}>📦 Запустить terraform_snapshot</button>
-      <pre>{output}</pre>
+      <button onClick={runSnapshot}>📦 Запустить terraform_snapshot</button>
+      <pre>{result}</pre>
     </div>
   );
 }
