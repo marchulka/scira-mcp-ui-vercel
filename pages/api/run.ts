@@ -1,6 +1,8 @@
-// /api/run.ts — в проекте model-context-protocol-mcp-with-vercel-functions
-
 export default async function handler(req, res) {
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Method not allowed" });
+  }
+
   const { tool } = req.body;
 
   if (tool === "terraform_snapshot") {
