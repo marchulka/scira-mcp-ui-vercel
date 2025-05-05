@@ -7,9 +7,9 @@ export default function Home() {
     const res = await fetch("/api/run", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify({ tool: "terraform_snapshot" })
+      body: JSON.stringify({ tool: "terraform_snapshot" }),
     });
 
     const data = await res.json();
@@ -18,7 +18,7 @@ export default function Home() {
 
   return (
     <div style={{ fontFamily: "sans-serif", padding: "2rem" }}>
-      <h1>🚀 Scira MCP UI (Vercel Edition)</h1>
+      <h1>🧠 Scira MCP UI (Vercel Edition)</h1>
       <p>Управляй инфраструктурой с одной кнопки</p>
       <button onClick={runSnapshot}>📦 Запустить terraform_snapshot</button>
       <pre>{result}</pre>
