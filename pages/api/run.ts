@@ -1,4 +1,3 @@
-// pages/api/run.ts
 import type { NextApiRequest, NextApiResponse } from "next";
 import terraform_snapshot from "../../tools/terraform_snapshot";
 

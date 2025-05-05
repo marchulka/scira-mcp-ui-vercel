@@ -9,18 +9,21 @@ export default async function run() {
     fs.mkdirSync(snapshotDir);
   }
 
-  const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
-  const snapshotMeta = {
+  const timestamp = new Date().toISOString().replace(/[:]/g, "-");
+
+  const snapshotData = {
     timestamp,
-    system: os.platform(),
-    arch: os.arch(),
-    node: process.version,
+    system: {
+      os: os.platform(),
+      arch: os.arch(),
+      node: process.version,
+    },
   };
 
-  const envFiles = [".env", ".env.local", ".env.production"];
-  const copied = [];
+  const files = [".env", ".env.local", ".env.production"];
+  const copied: string[] = [];
 
-  for (const file of envFiles) {
+  for (const file of files) {
     const fullPath = path.join(process.cwd(), file);
     if (fs.existsSync(fullPath)) {
       const dest = path.join(snapshotDir, `${file}.${timestamp}`);
@@ -30,27 +33,23 @@ export default async function run() {
   }
 
   try {
-    const gitStatus = execSync("git status", { encoding: "utf-8" });
-    const gitLog = execSync("git log -1", { encoding: "utf-8" });
-    fs.writeFileSync(
-      path.join(snapshotDir, `git-info-${timestamp}.txt`),
-      `=== GIT STATUS ===\\n${gitStatus}\\n\\n=== GIT LOG ===\\n${gitLog}`
-    );
-  } catch (err) {
-    fs.writeFileSync(
-      path.join(snapshotDir, `git-error-${timestamp}.txt`),
-      "Git status/log not available."
-    );
+    const gitstatus = execSync("git status", { encoding: "utf-8" });
+    const gitlog = execSync("git log -n 3", { encoding: "utf-8" });
+
+    fs.writeFileSync(path.join(snapshotDir, `git-status-${timestamp}.txt`), gitstatus);
+    fs.writeFileSync(path.join(snapshotDir, `git-log-${timestamp}.txt`), gitlog);
+  } catch (e) {
+    fs.writeFileSync(path.join(snapshotDir, `git-error-${timestamp}.txt`), "git status/log not available.");
   }
 
   fs.writeFileSync(
     path.join(snapshotDir, `snapshot-meta-${timestamp}.json`),
-    JSON.stringify({ ...snapshotMeta, copied }, null, 2)
+    JSON.stringify({ ...snapshotData, copied }, null, 2)
   );
 
   return {
     status: "snapshot_complete",
-    copied,
     timestamp,
+    copied,
   };
 }
